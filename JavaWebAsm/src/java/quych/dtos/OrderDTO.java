@@ -7,6 +7,7 @@ package quych.dtos;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  *
@@ -22,6 +23,8 @@ public class OrderDTO implements Serializable , Comparable<OrderDTO> {
     private Timestamp timeOfCreate;
     private int status;
     private String username;
+    private Date dayOrder;
+    private int amountOrder;
 
     public OrderDTO() {
     }
@@ -37,6 +40,13 @@ public class OrderDTO implements Serializable , Comparable<OrderDTO> {
         this.status = status;
         this.username = username;
     }
+
+    public OrderDTO(Date dayOrder, int amountOrder) {
+        this.dayOrder = dayOrder;
+        this.amountOrder = amountOrder;
+    }
+    
+    
 
   
 
@@ -74,6 +84,14 @@ public class OrderDTO implements Serializable , Comparable<OrderDTO> {
 
     public int getStatus() {
         return status;
+    }
+
+    public int getAmountOrder() {
+        return amountOrder;
+    }
+
+    public Date getDayOrder() {
+        return dayOrder;
     }
     
 
@@ -114,6 +132,15 @@ public class OrderDTO implements Serializable , Comparable<OrderDTO> {
         this.username = username;
     }
 
+    public void setAmountOrder(int amountOrder) {
+        this.amountOrder = amountOrder;
+    }
+
+    public void setDayOrder(Date dayOrder) {
+        this.dayOrder = dayOrder;
+    }
+    
+    
     @Override
     public int compareTo(OrderDTO o) {
         return this.getTimeOfCreate().compareTo(o.getTimeOfCreate());

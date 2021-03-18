@@ -46,18 +46,49 @@
             <jsp:include page="menu-admin.jsp" />
             <div class="content--block-admin">
                 <div class="content--category">
+                    <c:if test="${requestScope.FAILED != null}" >
+                        <div id="messageBlock" class="toast fade show">
+                            <div class="toast-header">
+                                <strong class="mr-auto"><i class="fa fa-globe"></i> Message</strong>
+                                <small class="text-muted">Tạm thời</small>
+                                <button id="closeMessage" type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+                            </div>
+                            <div class="toast-body">
+                                Thêm danh mục thất bại.
+                            </div>
+                        </div>
+                        <script>
+                            close = document.getElementById("closeMessage");
+                            close.addEventListener('click', function () {
+                                message = document.getElementById("messageBlock");
+                                message.style.display = 'none';
+                            }, false);
+                        </script>
+                    </c:if>
                     <div class="add--category">
-                        <h2>${requestScope.FAILED}</h2>
-                        <form id="addCate" action="${requestScope.DTO != null ? 'MainController?action=UpdateCategory' : 'MainController?action=AddCategory'}" method="POST" enctype="multipart/form-data">
+
+                        <form id="addCate" 
+                              action="${requestScope.DTO != null ? 'MainController?action=UpdateCategory' : 'MainController?action=AddCategory'}" 
+                              method="POST" 
+                              enctype="multipart/form-data"
+                              onsubmit="return validateForm()"
+                              >
                             <label class="title-add--product" for="">CategoryID:</label>
-                            <input type="text" name="txtCategoryID" value="${requestScope.DTO.getCategoryID()}" ${requestScope.DTO != null ? 'readonly' : ''}>
+                            <div>
+                                <input type="text" id="categoryID" name="txtCategoryID" value="${requestScope.DTO.getCategoryID()}" ${requestScope.DTO != null ? 'readonly' : ''} readonly="">
+                                <c:if test="${requestScope.DTO == null}">
+                                    <button type="button" id="generateID" style="padding: 0rem 2rem; margin-left: 1rem;" class="btn btn-primary" >Tạo ID</button>
+                                </c:if>
+                            </div>
                             <br>
-                            <label  class="title-add--product"  for="">Category Name:</label>
-                            <input type="text" name="txtCategoryName" value="${requestScope.DTO.getCategoryName()}">
+                            <label  class="title-add--product"  for="">Category Name:</label> <br />
+                            <input type="text" name="txtCategoryName" value="${requestScope.DTO.getCategoryName()}" required="">
+                            <br/>
+                            <span id="errorFullname" style="color: red;"></span>
                             <br />
                             <label class="title-add--product" for="">Image:</label>
-
-                            <input type="file" name="imgCategory" value="${requestScope.DTO.getcUrl()}">
+                            <br />
+                            <input type="file" name="imgCategory" value="${requestScope.DTO.getcUrl()}" required="">
                             <br>
                             <label for="">Status: </label>
                             <select name="txtStatus">
@@ -74,6 +105,25 @@
             </div>
         </div>
         <script src="./js/index.js"></script>
+        <script>
+                                  let generateID = document.getElementById('generateID');
+                                  let idCategory = document.getElementById('categoryID');
+                                  generateID.addEventListener('click', function () {
+                                      let id = 'DM' + new Date().getTime();
+                                      idCategory.value = id;
+                                  })
+                                  function validateForm() {
+                                      let categoryName = document.querySelector('[name="txtCategoryName"]').value;
+
+                                      let errorName = document.getElementById('errorFullname');
+                                      if (categoryName.length > 30) {
+                                          errorName.innerHTML = 'Tên danh mục không được quá 30 kí tự';
+                                          return false;
+                                      }
+                                      return true;
+                                  }
+        </script>
+
     </body>
 
 </html>

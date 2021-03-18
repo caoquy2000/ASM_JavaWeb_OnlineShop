@@ -14,36 +14,41 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import quych.dtos.ProductDTO;
-import quych.models.ProductDAO;
+import quych.dtos.OrderDTO;
+import quych.dtos.OrderDetailDTO;
+import quych.models.OrderDAO;
+import quych.models.OrderDetailDAO;
 
 /**
  *
  * @author caoho
  */
-@WebServlet(name = "ManageProductController", urlPatterns = {"/ManageProductController"})
-public class ManageProductController extends HttpServlet {
+@WebServlet(name = "LoadOrderDetailController", urlPatterns = {"/LoadOrderDetailController"})
+public class LoadOrderDetailController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            ProductDAO dao = new ProductDAO();
-            List<ProductDTO> manageProduct = dao.getListProductAndCategoryName();
-            request.setAttribute("MANAGEPRODUCT", manageProduct);
-            request.setAttribute("CLASS1", "active-choose");
+            String id = request.getParameter("id");
+            OrderDAO orderDAO = new OrderDAO();
+            OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+            OrderDTO dto = orderDAO.getOrderHistoryById(id);
+            List<OrderDetailDTO> listOrderDetail = orderDetailDAO.getListOrderDetailByOrderID(id);
+            request.setAttribute("DTOVIEWDETAIL", dto);
+            request.setAttribute("RESULTVIEWDETAIL", listOrderDetail);
         } catch (Exception e) {
-            log("ERROR at ManageController: " + e.getMessage());
+            log("ERROR at LoadOrderDetailController: " + e.getMessage());
         } finally {
             HttpSession session = request.getSession();
             String username = (String) session.getAttribute("USERNAME");
             if (username == null) {
                 response.sendRedirect("login-page.jsp");
             } else {
-                if (!username.equals("admin")) {
-                    response.sendRedirect("LoadDataController");
+                if (username.equals("admin")) {
+                    response.sendRedirect("admin-product-page.jsp");
                 } else {
-                    request.getRequestDispatcher("admin-product-page.jsp").forward(request, response);
+                    request.getRequestDispatcher("shoppingcart-page.jsp").forward(request, response);
                 }
             }
         }

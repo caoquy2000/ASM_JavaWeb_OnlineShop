@@ -21,6 +21,7 @@ public class ProductDTO implements Serializable {
     private String pUrl;
     private String categoryID;
     private String categoryName;
+    private int statusCate;
 
     public ProductDTO() {
     }
@@ -47,6 +48,19 @@ public class ProductDTO implements Serializable {
         this.categoryID = categoryID;
         this.categoryName = categoryName;
     }
+
+    public ProductDTO(String productID, String pName, float pPrice, int pQuantity, String pDescription, int status, String pUrl, String categoryID, int statusCate) {
+        this.productID = productID;
+        this.pName = pName;
+        this.pPrice = pPrice;
+        this.pQuantity = pQuantity;
+        this.pDescription = pDescription;
+        this.status = status;
+        this.pUrl = pUrl;
+        this.categoryID = categoryID;
+        this.statusCate = statusCate;
+    }
+    
     
     
 
@@ -85,6 +99,10 @@ public class ProductDTO implements Serializable {
     public String getCategoryName() {
         return categoryName;
     }
+
+    public int getStatusCate() {
+        return statusCate;
+    }
     
     public void setProductID(String productID) {
         this.productID = productID;
@@ -120,6 +138,10 @@ public class ProductDTO implements Serializable {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public void setStatusCate(int statusCate) {
+        this.statusCate = statusCate;
     }
     
 }

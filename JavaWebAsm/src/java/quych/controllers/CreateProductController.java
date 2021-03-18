@@ -29,6 +29,7 @@ public class CreateProductController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         response.setContentType("text/html;charset=UTF-8");
         String url = FAILED;
 
         try {
@@ -73,7 +74,8 @@ public class CreateProductController extends HttpServlet {
                 ProductDTO dto = new ProductDTO(productID, productName, price, quantity, description, status, urlImg, categoryID);
                 if (dao.insertProduct(dto)) {
                     url = SUCCESS;
-                    request.setAttribute("SUCCESS", "CATEGORY ADDED!");
+//                    request.setAttribute("SUCCESS", "CATEGORY ADDED!");
+                    request.setAttribute("ADDPRODUCTSUCCESS", "Add category success");
                 } else {
                     request.setAttribute("FAILED", "ADD CATEGORY FAILED");
                 }
@@ -86,10 +88,12 @@ public class CreateProductController extends HttpServlet {
             HttpSession session = request.getSession();
             String username = (String) session.getAttribute("USERNAME");
             if (username == null) {
-                response.sendRedirect("login-page.jsp");
+//                response.sendRedirect("login-page.jsp");
+                request.getRequestDispatcher("login-page.jsp").forward(request, response);
             } else {
                 if (!username.equals("admin")) {
-                    response.sendRedirect("LoadDataController");
+//                    response.sendRedirect("LoadDataController");
+                    request.getRequestDispatcher("LoadDataController").forward(request, response);
                 } else {
                     request.getRequestDispatcher(url).forward(request, response);
                 }
@@ -114,6 +118,5 @@ public class CreateProductController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }
-
 
 }

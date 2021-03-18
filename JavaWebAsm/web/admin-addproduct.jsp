@@ -4,6 +4,8 @@
     Author     : caoho
 --%>
 
+<%@page import="quych.dtos.CategoryDTO"%>
+<%@page import="java.util.List"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -34,61 +36,120 @@
     <body>
         <%
             String username = (String) session.getAttribute("USERNAME");
+            List<CategoryDTO> listDTOs = (List<CategoryDTO>) request.getAttribute("MANAGECATEGORY");
             if (username == null) {
                 response.sendRedirect("login-page.jsp");
             } else {
                 if (!username.equals("admin")) {
                     response.sendRedirect("LoadDataController");
                 } else {
-
+                    if (listDTOs == null) {
+                        request.getRequestDispatcher("LoadAddProductController").forward(request, response);
+                    }
                 }
             }
         %>
+        <jsp:include page="navbar-admin.jsp" />
         <div class="container--content-admin">
             <jsp:include page="menu-admin.jsp" />
             <div class="content--block-admin">
+                <c:if test="${requestScope.FAILED != null}" >
+                    <div id="messageBlock" class="toast fade show">
+                        <div class="toast-header">
+                            <strong class="mr-auto"><i class="fa fa-globe"></i> Message</strong>
+                            <small class="text-muted">Tạm thời</small>
+                            <button id="closeMessage" type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+                        </div>
+                        <div class="toast-body">
+                            Thêm sản phẩm thất bại.
+                        </div>
+                    </div>
+                    <script>
+                        close = document.getElementById("closeMessage");
+                        close.addEventListener('click', function () {
+                            message = document.getElementById("messageBlock");
+                            message.style.display = 'none';
+                        }, false);
+                    </script>
+                </c:if>
                 <div class="add-product-block">
-                    <form id="addProduct" action="${requestScope.DTO != null ? 'MainController?action=UpdateProduct' : 'MainController?action=AddProduct'}" method="post" enctype="multipart/form-data">
+
+                    <form id="addProduct" 
+                          action="${requestScope.DTOEDIT != null ? 'MainController?action=UpdateProduct' : 'MainController?action=AddProduct'}" 
+                          method="post" 
+                          enctype="multipart/form-data"
+                          style="width: 500px; height: 700px;"
+                          onsubmit="return validateForm()"
+                          >
                         <label class="title-add--product" for="">ProductID</label>
-                        <input type="text" name="txtProductID" value="${requestScope.DTO.getProductID()}"/>
+                        <div style="display: flex;">
+                            <input type="text" id="idProduct" name="txtProductID" value="${requestScope.DTOEDIT.getProductID()}" readonly="" required=""/>
+                            <c:if test="${requestScope.DTOEDIT == null}">
+                                <button type="button" id="generateID" style="padding: 0rem 2rem; margin-left: 1rem;" class="btn btn-primary" >Tạo ID</button>
+                            </c:if>
+                        </div>
 
                         <label class="title-add--product" for="">Product Name</label>
-                        <input type="text" name="txtProductName" value="${requestScope.DTO.getpName()}" />
-
+                        <input id="productName" type="text" name="txtProductName" value="${requestScope.DTOEDIT.getpName()}" required="" />
+                        <span id="errorFullname" style="color: red;"></span>
+                        <br />
                         <label  class="title-add--product" for="">Status</label>
                         <select name="txtStatusProduct" id="">
 
-                            <option value="0" ${requestScope.DTO.getStatus() == 0 ? 'selected' : ''}>Draft</option>
-                            <option value="1" ${requestScope.DTO.getStatus() == 1 ? 'selected' : ''}>Active</option>
+                            <option value="0" ${requestScope.DTOEDIT.getStatus() == 0 ? 'selected' : ''}>Draft</option>
+                            <option value="1" ${requestScope.DTOEDIT.getStatus() == 1 ? 'selected' : ''}>Active</option>
                         </select>
 
                         <label  class="title-add--product" for="">Category</label>
                         <select name="txtCategoryName" id="">
                             <c:forEach var="dto" items="${requestScope.MANAGECATEGORY}">
-                                <option value="${dto.getCategoryID()}">${dto.getCategoryName()}</option>
-
+                                <c:if test="${dto.getStatus() != 0}">
+                                    <option value="${dto.getCategoryID()}">${dto.getCategoryName()}</option>
+                                </c:if>
                             </c:forEach>
                         </select>
 
                         <label class="title-add--product" for="">Image</label>
-                        <input type="file" name="imgProduct" value="${requestScope.DTO.getpUrl()}" />
+                        <input type="file" name="imgProduct" value="${requestScope.DTOEDIT.getpUrl()}" required=""/>
 
                         <label class="title-add--product" for="">Price</label>
-                        <input type="number" name="txtProductPrice" value="${requestScope.DTO.getpPrice()}"/>
+                        <input type="number" name="txtProductPrice" value="${requestScope.DTOEDIT.getpPrice()}" required=""/>
 
                         <label class="title-add--product" for="">Quantity</label>
-                        <input type="number" name="txtProductQuantity" value="${requestScope.DTO.getpQuantity()}" />
+                        <input type="number" name="txtProductQuantity" value="${requestScope.DTOEDIT.getpQuantity()}"  required=""/>
 
                         <label class="title-add--product" for="">Description</label>
-                        <input type="text" name="txtDescription" value="${requestScope.DTO.getpDescription()}" />
-
-                        <button type="submit" class="btn--addProduct"> Submit </button>
+                        <input type="text" name="txtDescription" value="${requestScope.DTOEDIT.getpDescription()}"  required=""/>
+                        <div style="display: flex; justify-content: center; margin-top: 0.5rem;">
+                            <button type="submit" class="btn--addProduct btn btn-primary" style=""> Submit </button>
+                        </div>
                     </form>
 
                 </div>
             </div>
         </div>
         <script src="./js/index.js"></script>
+        <script>
+                              let generateID = document.getElementById('generateID');
+                              let idProduct = document.getElementById('idProduct');
+                              generateID.addEventListener('click', function () {
+                                  let id = 'SP' + new Date().getTime();
+                                  idProduct.value = id;
+                              })
+
+        </script>
+        <script>
+            function validateForm() {
+                let productName = document.querySelector('[name="txtProductName"]').value;
+
+                let errorName = document.getElementById('errorFullname');
+                if (productName.length > 30) {
+                    errorName.innerHTML = 'Tên sản phẩm không được quá 30 kí tự';
+                    return false;
+                }
+                return true;
+            }
+        </script>
     </body>
 
 </html>

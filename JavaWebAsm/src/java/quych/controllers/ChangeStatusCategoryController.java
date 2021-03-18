@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import quych.models.CategoryDAO;
+import quych.models.ProductDAO;
 
 /**
  *
@@ -34,7 +35,8 @@ public class ChangeStatusCategoryController extends HttpServlet {
             String id = request.getParameter("id");
             int status = Integer.parseInt(request.getParameter("status"));
             CategoryDAO dao = new CategoryDAO();
-            if (dao.changStatus(status, id)) {
+            
+            if (dao.changStatus(status, id)) {             
                 url = SUCCESS;
             } else {
                 request.setAttribute("INVALID", "CHANGE FAILED");

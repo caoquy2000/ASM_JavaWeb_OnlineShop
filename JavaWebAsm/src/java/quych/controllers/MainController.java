@@ -43,6 +43,13 @@ public class MainController extends HttpServlet {
     private static final String CHANGESTATUSORDER = "ChangeStatusOrderController";
     private static final String LOADMYORDER = "LoadUserOrderController";
     private static final String CANCELORDER = "CancelOrderController";
+    private static final String VIEWADMINPRODUCT = "admin-product-page.jsp";
+    private static final String VIEWSTATICTIS = "StatictisController";
+    private static final String UPDATEQUANTITYCART = "UpdateCartController";
+    private static final String SEARCHSTATICTIS = "SearchStatictisController";
+    private static final String SEARCHPRODUCTHOME = "SearchProductHomeController";
+    private static final String VIEWORDERDETAIL = "LoadOrderDetailController";
+   
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -53,6 +60,18 @@ public class MainController extends HttpServlet {
             String action = request.getParameter("action");
             if (action == null ){
                 url = LOAD;
+            } else if (action.equals("ClientViewDetailOrder")) {
+                url = VIEWORDERDETAIL;
+            } else if(action.equals("ViewStatictisFromDateToDate")) {
+                url = SEARCHSTATICTIS;
+            } else if (action.equals("SearchProductAtHome")) {
+                url = SEARCHPRODUCTHOME;
+            } else if (action.equals("ChangeQuantityInCart")) {
+                url = UPDATEQUANTITYCART;
+            } else if (action.equals("ViewAdminProduct")) {
+                url = VIEWADMINPRODUCT;
+            } else if (action.equals("ViewAdminStatictis")) {
+                url = VIEWSTATICTIS;
             } else if (action.equals("CancelOrder")) {
                 url = CANCELORDER;
             } else if (action.equals("LoadMyOrder")) {

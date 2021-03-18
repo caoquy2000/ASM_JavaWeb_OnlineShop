@@ -26,7 +26,7 @@ public class LoginController extends HttpServlet {
    
     private final static String FAILED = "login-page.jsp";
     private final static String SUCCESS = "LoadDataController";
-    private final static String ADMIN = "ManageProductController";
+    private final static String ADMIN = "StatictisController";
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -41,6 +41,7 @@ public class LoginController extends HttpServlet {
             if (role != null) {
                 if (role.equals("admin")) {
                     url = ADMIN;
+       
                     HttpSession session = request.getSession();
                     session.setAttribute("USERNAME", username);
                 } else if (role.equals("customer")) {
@@ -48,6 +49,8 @@ public class LoginController extends HttpServlet {
                     HttpSession session = request.getSession();
                     session.setAttribute("USERNAME", username);
                 }
+            } else {
+                request.setAttribute("INVAID", "Error Username or Password");
             }
         } catch (Exception e) {
             log("ERROR at LoginController: " + e.getMessage());

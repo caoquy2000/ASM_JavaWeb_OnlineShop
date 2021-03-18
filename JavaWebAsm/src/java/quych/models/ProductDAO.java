@@ -62,6 +62,34 @@ public class ProductDAO implements Serializable {
         return result;
     }
 
+    public List<ProductDTO> getListProductAndCategoryStatus() throws Exception {
+        List<ProductDTO> result;
+        try {
+            conn = DBUtils.getConnection();
+            String sql = "select p.productID, p.pName, p.pPrice, p.pQuantity, p.pDescription, p.status, p.pUrl, p.categoryID,c.status as StatusCate "
+                    + "from tblProducts p left join tblCategorys c on p.categoryID = c.categoryID";
+            stm = conn.prepareStatement(sql);
+            rs = stm.executeQuery();
+            result = new ArrayList<>();
+            while (rs.next()) {
+                String productID = rs.getString("productID");
+                String pName = rs.getString("pName");
+                float pPrice = rs.getFloat("pPrice");
+                int pQuantity = rs.getInt("pQuantity");
+                String pDescription = rs.getString("pDescription");
+                int status = rs.getInt("status");
+                String pUrl = rs.getString("pUrl");
+                String categoryID = rs.getString("categoryID");
+                int statusCate = rs.getInt("StatusCate");
+                ProductDTO dto = new ProductDTO(productID, pName, pPrice, pQuantity, pDescription, status, pUrl, categoryID, statusCate);
+                result.add(dto);
+            }
+        } finally {
+            closeConnection();
+        }
+        return result;
+    }
+
     public List<ProductDTO> getListProductAndCategoryName() throws Exception {
         List<ProductDTO> result;
         try {
@@ -136,7 +164,7 @@ public class ProductDAO implements Serializable {
             stm = conn.prepareStatement(sql);
             stm.setString(1, id);
             dto = new ProductDTO();
-            
+
             rs = stm.executeQuery();
             if (rs.next()) {
                 dto.setProductID(id);
@@ -153,7 +181,7 @@ public class ProductDAO implements Serializable {
         }
         return dto;
     }
-    
+
     public boolean updateProduct(ProductDTO dto) throws Exception {
         boolean check = false;
         try {
@@ -175,7 +203,7 @@ public class ProductDAO implements Serializable {
         }
         return check;
     }
-    
+
     public String getImgProductByID(String id) throws Exception {
         String result = null;
         try {
@@ -192,12 +220,12 @@ public class ProductDAO implements Serializable {
         }
         return result;
     }
-    
+
     public List<ProductDTO> searchByLikeName(String name) throws Exception {
         List<ProductDTO> result;
         try {
             conn = DBUtils.getConnection();
-            String sql = "Select productID, pName, pPrice, pQuantity, pDescription, p.status, pUrl , p.categoryID, categoryName "
+            String sql = "Select productID, pName, pPrice, pQuantity, pDescription, p.status, pUrl , p.categoryID, c.status as StatusCate "
                     + "from tblProducts as p left join tblCategorys as c on p.categoryID = c.categoryID Where pName LIKE ?";
             stm = conn.prepareStatement(sql);
             stm.setString(1, "%" + name + "%");
@@ -212,8 +240,8 @@ public class ProductDAO implements Serializable {
                 int status = rs.getInt("status");
                 String pUrl = rs.getString("pUrl");
                 String categoryID = rs.getString("categoryID");
-                String categoryName = rs.getString("categoryName");
-                ProductDTO dto = new ProductDTO(productID, pName, pPrice, pQuantity, pDescription, status, pUrl, categoryID,categoryName);
+                int statusCate = rs.getInt("StatusCate");
+                ProductDTO dto = new ProductDTO(productID, pName, pPrice, pQuantity, pDescription, status, pUrl, categoryID, statusCate);
                 result.add(dto);
             }
         } finally {
@@ -221,7 +249,7 @@ public class ProductDAO implements Serializable {
         }
         return result;
     }
-    
+
     public boolean checkQuantity(String id, int quantity) throws Exception {
         boolean check = false;
         try {
@@ -234,9 +262,26 @@ public class ProductDAO implements Serializable {
             if (rs.next()) {
                 currentQuantityOfProduct = Integer.parseInt(rs.getString("pQuantity"));
             }
-            if (quantity < currentQuantityOfProduct) {
+            System.out.println(quantity + "Ahihi");
+            System.out.println(currentQuantityOfProduct + "ahaha");
+            if (quantity <= currentQuantityOfProduct) {
                 check = true;
             }
+        } finally {
+            closeConnection();
+        }
+        return check;
+    }
+
+    public boolean updateStatusByCategory(int status, String id) throws Exception {
+        boolean check = false;
+        try {
+            conn = DBUtils.getConnection();
+            String sql = "Update tblProducts Set status = ? Where categoryID = ?";
+            stm = conn.prepareStatement(sql);
+            stm.setInt(1, status);
+            stm.setString(2, id);
+            check = stm.executeUpdate() > 0;
         } finally {
             closeConnection();
         }

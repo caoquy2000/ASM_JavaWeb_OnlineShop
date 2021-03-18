@@ -32,7 +32,9 @@ public class SearchProductController extends HttpServlet {
             String searchValue = request.getParameter("txtValueSearchProduct");
             ProductDAO dao = new ProductDAO();
             List<ProductDTO> resultSearch = dao.searchByLikeName(searchValue);
-            
+            if (resultSearch.size() == 0) {
+                request.setAttribute("NULL", "Không có sản phẩm nào được tìm thấy!");
+            }
             request.setAttribute("RESULTSEARCH", resultSearch);
         } catch (Exception e) {
             log("ERROR at SearchProductController: " + e.getMessage());

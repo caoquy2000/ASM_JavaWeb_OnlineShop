@@ -33,7 +33,7 @@ public class LoadDataController extends HttpServlet {
             CategoryDAO categoryDAO = new CategoryDAO();
             ProductDAO productDAO = new ProductDAO();
             List<CategoryDTO> listCategory = categoryDAO.getListCategory();
-            List<ProductDTO> listProduct = productDAO.getListProduct();
+            List<ProductDTO> listProduct = productDAO.getListProductAndCategoryStatus();
             request.setAttribute("LISTCATEGORY", listCategory);
             request.setAttribute("LISTPRODUCT", listProduct);
             

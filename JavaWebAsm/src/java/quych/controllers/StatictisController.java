@@ -6,34 +6,38 @@
 package quych.controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import quych.dtos.ProductDTO;
-import quych.models.ProductDAO;
+import quych.dtos.OrderDTO;
+import quych.models.OrderDAO;
 
 /**
  *
  * @author caoho
  */
-@WebServlet(name = "ManageProductController", urlPatterns = {"/ManageProductController"})
-public class ManageProductController extends HttpServlet {
+@WebServlet(name = "StatictisController", urlPatterns = {"/StatictisController"})
+public class StatictisController extends HttpServlet {
 
+   
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            ProductDAO dao = new ProductDAO();
-            List<ProductDTO> manageProduct = dao.getListProductAndCategoryName();
-            request.setAttribute("MANAGEPRODUCT", manageProduct);
-            request.setAttribute("CLASS1", "active-choose");
+            OrderDAO dao = new OrderDAO();
+            List<OrderDTO> listDTO = dao.getStatictisDefault();
+
+            request.setAttribute("RESULTSTATICTIS", listDTO);
+            request.setAttribute("CLASS4", "active-choose");
         } catch (Exception e) {
-            log("ERROR at ManageController: " + e.getMessage());
+            log("ERROR at StatictisController: " + e.getMessage());
         } finally {
             HttpSession session = request.getSession();
             String username = (String) session.getAttribute("USERNAME");
@@ -43,7 +47,7 @@ public class ManageProductController extends HttpServlet {
                 if (!username.equals("admin")) {
                     response.sendRedirect("LoadDataController");
                 } else {
-                    request.getRequestDispatcher("admin-product-page.jsp").forward(request, response);
+                    request.getRequestDispatcher("admin-statictis-page.jsp").forward(request, response);
                 }
             }
         }

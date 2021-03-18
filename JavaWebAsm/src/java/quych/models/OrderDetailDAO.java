@@ -8,6 +8,7 @@ package quych.models;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import quych.db.DBUtils;
 import quych.dtos.OrderDetailDTO;
@@ -88,5 +89,29 @@ public class OrderDetailDAO {
             closeConnection();
         }
         return check;
+    }
+    public List<OrderDetailDTO> getListOrderDetailByOrderID(String id) throws Exception {
+        List<OrderDetailDTO> result;
+        try {
+            conn = DBUtils.getConnection();
+            String sql = "select o.orderDetailID, p.pName, p.pPrice, o.quantity, p.pUrl "
+                    + "from tblOrderDetails o left join tblProducts p on o.productID = p.productID Where o.orderID = ?";
+            stm = conn.prepareStatement(sql);
+            stm.setString(1, id);
+            rs = stm.executeQuery();
+            result = new ArrayList<>();
+            while (rs.next()) {
+                OrderDetailDTO dto = new OrderDetailDTO();
+                dto.setOrderDetailID(rs.getString("orderDetailID"));
+                dto.setpName(rs.getString("pName"));
+                dto.setpPrice(rs.getFloat("pPrice"));
+                dto.setQuantity(rs.getInt("quantity"));
+                dto.setpUrl(rs.getString("pUrl"));
+                result.add(dto);
+            }
+        } finally {
+            closeConnection();
+        }
+        return result;
     }
 }

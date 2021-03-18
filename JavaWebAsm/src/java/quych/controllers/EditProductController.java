@@ -37,7 +37,7 @@ public class EditProductController extends HttpServlet {
             CategoryDAO daoCategory = new CategoryDAO();
             List<CategoryDTO> manageCategory = daoCategory.getListCategory();
             request.setAttribute("MANAGECATEGORY", manageCategory);
-            request.setAttribute("DTO", dto);
+            request.setAttribute("DTOEDIT", dto);
         } catch (Exception e) {
             log("ERROR at EditProductController: " + e.getMessage());
          

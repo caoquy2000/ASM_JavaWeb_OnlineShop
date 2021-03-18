@@ -37,14 +37,20 @@
                     <h1>Đăng Ký</h1>
                 </div>
                 <div class="form--content">
-                    <form action="MainController" method="POST">
+                    <form action="MainController" method="POST" onsubmit="return validateForm()">
+                        <c:if test="${requestScope.INVALID != null}">
+                            <span style="color: red;">Tên đăng nhập đã tồn tại</span>
+                        </c:if>
                         <input type="text" class="field--form" name="txtUsername" placeholder="Tên đăng nhập" required >
+
                         <br>
-                        <input type="password" class="field--form" name="txtPassword" placeholder="Mật khẩu" required>
+                        <input type="password" id="input_password1" class="field--form" name="txtPassword" placeholder="Mật khẩu" required onkeyup="check()">
                         <br>
-                        <input type="password" class="field--form" name="txtRepassword" placeholder="Nhập lại mật khẩu" required>
+                        <input type="password" id="input_password2" class="field--form"  name="txtRepassword" placeholder="Nhập lại mật khẩu" required onkeyup="check()">
+                        <span id="message"></span>
                         <br>
                         <input type="text" class="field--form" name="txtFullname" placeholder="Họ và tên" required>
+                        <span style="color: red; " id="errorFullname"></span>
                         <br>
                         <button type="submit" class="button--form" name="action" value="CreateAccount">Đăng Ký</button>
                     </form>
@@ -64,5 +70,29 @@
         <jsp:include page="footer.jsp" />
 
         <script src="./js/index.js"></script>
+        <script>
+                            function check() {
+                                var password = document.getElementById('input_password1').value;
+                                var rePassword = document.getElementById('input_password2').value;
+
+                                if (password === rePassword) {
+                                    document.getElementById('message').style.color = 'Green';
+                                    document.getElementById('message').innerHTML = 'Khớp mật khẩu';
+                                } else {
+                                    document.getElementById('message').style.color = 'Red';
+                                    document.getElementById('message').innerHTML = 'Mật khẩu chưa khớp';
+                                }
+                            }
+                            function validateForm() {
+                                let fullname = document.querySelector('[name="txtFullname"]').value;
+
+                                let errorName = document.getElementById('errorFullname');
+                                if (fullname.length > 30) {
+                                    errorName.innerHTML = 'Tên Không được quá 30 kí tự';
+                                    return false;
+                                }
+                                return true;
+                            }
+        </script>
     </body>
 </html>

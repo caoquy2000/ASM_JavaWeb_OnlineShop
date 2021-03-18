@@ -7,45 +7,48 @@ package quych.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import quych.dtos.ProductDTO;
-import quych.models.ProductDAO;
+import quych.dtos.CartObj;
 
 /**
  *
  * @author caoho
  */
-@WebServlet(name = "ManageProductController", urlPatterns = {"/ManageProductController"})
-public class ManageProductController extends HttpServlet {
+@WebServlet(name = "UpdateCartController", urlPatterns = {"/UpdateCartController"})
+public class UpdateCartController extends HttpServlet {
 
+  
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            ProductDAO dao = new ProductDAO();
-            List<ProductDTO> manageProduct = dao.getListProductAndCategoryName();
-            request.setAttribute("MANAGEPRODUCT", manageProduct);
-            request.setAttribute("CLASS1", "active-choose");
+            int valueUpdate = Integer.parseInt(request.getParameter("txtCartQuantity"));
+            String id = request.getParameter("cartIdUpdate");
+            
+            HttpSession session = request.getSession();
+            CartObj shoppingCart = (CartObj) session.getAttribute("CART");
+            shoppingCart.update(id, valueUpdate);
+            session.setAttribute("CART", shoppingCart);
         } catch (Exception e) {
-            log("ERROR at ManageController: " + e.getMessage());
+            log("ERROR att UpdateCartController: " + e.getMessage());
         } finally {
             HttpSession session = request.getSession();
             String username = (String) session.getAttribute("USERNAME");
             if (username == null) {
                 response.sendRedirect("login-page.jsp");
             } else {
-                if (!username.equals("admin")) {
-                    response.sendRedirect("LoadDataController");
+                if (username.equals("admin")) {
+                    response.sendRedirect("admin-product-page.jsp");
                 } else {
-                    request.getRequestDispatcher("admin-product-page.jsp").forward(request, response);
+                    request.getRequestDispatcher("shoppingcart-page.jsp").forward(request, response);
                 }
             }
+
         }
     }
 

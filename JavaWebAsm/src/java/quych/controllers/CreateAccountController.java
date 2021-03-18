@@ -25,7 +25,7 @@ public class CreateAccountController extends HttpServlet {
 
     private static final String SUCCESS = "login-page.jsp";
     private static final String FAILED = "signup-page.jsp";
- 
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -43,18 +43,20 @@ public class CreateAccountController extends HttpServlet {
             }
         } catch (Exception e) {
             log("ERROR at CreateAccountController: " + e.getMessage());
+            if (e.getMessage().contains("duplicate")) {
+                url = FAILED;
+                request.setAttribute("INVALID", "Username is exist");
+            }
         } finally {
             HttpSession session = request.getSession();
-            String user = (String)session.getAttribute("USERNAME");
-       
-            System.out.println(user + "ahihi");
+            String user = (String) session.getAttribute("USERNAME");
             if (user == null) {
                 request.getRequestDispatcher(url).forward(request, response);
             } else {
                 if (user.equals("admin")) {
                     response.sendRedirect("admin-product-page.jsp");
                 } else {
-                     response.sendRedirect("home-page.jsp");
+                    response.sendRedirect("home-page.jsp");
                 }
             }
         }

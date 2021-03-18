@@ -42,8 +42,9 @@
                         <br>
                         <input type="password" name="txtPassword" value="${requestScope.PASSWORD}" class="field--form" placeholder="Mật khẩu" required>
                         <br>
-                        <input type="checkbox" name="txtRemember" id=""><label style="margin-left: 1rem; font-size: 1.5rem;">Nhớ mật khẩu</label>
-                        <br>
+                        <c:if test="${INVAID != null}">
+                            <span style="color: red;">Sai tên đăng nhập hoặc mật khẩu</span>
+                        </c:if>
                         <button type="submit" class="button--form" name="action" value="Login">Đăng Nhập</button>
                     </form>
                 </div>

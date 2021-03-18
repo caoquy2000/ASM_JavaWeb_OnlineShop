@@ -18,6 +18,10 @@ public class OrderDetailDTO implements Serializable {
     private int status;
     private String orderID;
     private String productID;
+    private String pName;
+    private float pPrice;
+    private String pUrl;
+
 
     public OrderDetailDTO() {
     }
@@ -31,6 +35,18 @@ public class OrderDetailDTO implements Serializable {
         this.productID = productID;
     }
 
+    public String getpUrl() {
+        return pUrl;
+    }
+    
+    public String getpName() {
+        return pName;
+    }
+
+    public float getpPrice() {
+        return pPrice;
+    }
+    
     public String getOrderDetailID() {
         return orderDetailID;
     }
@@ -78,5 +94,18 @@ public class OrderDetailDTO implements Serializable {
     public void setProductID(String productID) {
         this.productID = productID;
     }
+
+    public void setpName(String pName) {
+        this.pName = pName;
+    }
+
+    public void setpPrice(float pPrice) {
+        this.pPrice = pPrice;
+    }
+
+    public void setpUrl(String pUrl) {
+        this.pUrl = pUrl;
+    }
+    
     
 }

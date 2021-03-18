@@ -13,39 +13,36 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import quych.dtos.CategoryDTO;
 import quych.dtos.ProductDTO;
+import quych.models.CategoryDAO;
 import quych.models.ProductDAO;
 
 /**
  *
  * @author caoho
  */
-@WebServlet(name = "ManageProductController", urlPatterns = {"/ManageProductController"})
-public class ManageProductController extends HttpServlet {
+@WebServlet(name = "SearchProductHomeController", urlPatterns = {"/SearchProductHomeController"})
+public class SearchProductHomeController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
+            String searchValue = request.getParameter("txtSearchProductHome");
             ProductDAO dao = new ProductDAO();
-            List<ProductDTO> manageProduct = dao.getListProductAndCategoryName();
-            request.setAttribute("MANAGEPRODUCT", manageProduct);
-            request.setAttribute("CLASS1", "active-choose");
-        } catch (Exception e) {
-            log("ERROR at ManageController: " + e.getMessage());
-        } finally {
-            HttpSession session = request.getSession();
-            String username = (String) session.getAttribute("USERNAME");
-            if (username == null) {
-                response.sendRedirect("login-page.jsp");
-            } else {
-                if (!username.equals("admin")) {
-                    response.sendRedirect("LoadDataController");
-                } else {
-                    request.getRequestDispatcher("admin-product-page.jsp").forward(request, response);
-                }
+            CategoryDAO categoryDAO = new CategoryDAO();
+            List<CategoryDTO> listCategory = categoryDAO.getListCategory();
+            List<ProductDTO> resultSearch = dao.searchByLikeName(searchValue);
+            if (resultSearch.size() == 0) {
+                request.setAttribute("NULL", "Không có sản phẩm nào được tìm thấy!");
             }
+            request.setAttribute("RESULTSEARCH", resultSearch);
+            request.setAttribute("LISTCATEGORY", listCategory);
+        } catch (Exception e) {
+            log("ERROR at SearchProductHomeController: " + e.getMessage());
+        } finally {
+            request.getRequestDispatcher("home-page.jsp").forward(request, response);
         }
     }
 

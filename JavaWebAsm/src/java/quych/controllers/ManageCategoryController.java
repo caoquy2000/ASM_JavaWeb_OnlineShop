@@ -31,6 +31,7 @@ public class ManageCategoryController extends HttpServlet {
             CategoryDAO dao = new CategoryDAO();
             List<CategoryDTO> manageCategory = dao.getListCategory();
             request.setAttribute("MANAGECATEGORY", manageCategory);
+            request.setAttribute("CLASS2", "active-choose");
         } catch (Exception e) {
             log("ERROR at ManageCategoryController: " + e.getMessage());
         } finally {

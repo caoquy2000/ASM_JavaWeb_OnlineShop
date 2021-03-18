@@ -6,6 +6,7 @@
 
 <%@page import="quych.dtos.ProductDTO"%>
 <%@page import="java.util.List"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -29,6 +30,31 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
                 integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+        <style>
+            #numbers {
+                padding: 0;
+                margin: 0 2rem;
+                list-style-type: none;
+                display: flex;
+            }
+
+            #numbers li a {
+                color: black;
+                padding: .5rem 1rem;
+                text-decoration: none;
+                opacity: .7;
+            }
+
+            #numbers li a:hover {
+                opacity: 1;
+            }
+
+            #numbers li a.active {
+                opacity: 1;
+                background: black;
+                color: #fff;
+            }
+        </style>
     </head>
 
     <body>
@@ -54,18 +80,12 @@
             <jsp:include page="menu-admin.jsp" />
             <div class="content--block-admin">
                 <div class="btn--new-product">
-                    <c:url var="addPage" value="MainController">
-                        <c:param name="action" value="LoadAddProduct" />
-                    </c:url>
-                    <a href="${addPage}">Thêm sản phẩm</a>
+
                 </div>
 
-                <div class="table--product">
-                    <form action="MainController" method="POST" style="margin-bottom: 15px;">
-                        Search: <input type="text" name="txtValueSearchOrder" value="" placeholder="Mã đơn hàng..."/>
-                        <button type="submit" name="action" value="SearchOrder">Tìm kiếm</button>
-                    </form>
-                    <table class="table">
+                <div class="table--product" style="height: 550px;">
+                   
+                    <table class="table" id="my-table">
                         <thead>
                             <tr>
                                 <th scope="col">STT.</th>
@@ -77,7 +97,7 @@
 
                                 <th scope="col">Trạng Thái</th>
                                 <th scope="col">Action</th>
-                                <th scope="col">Chi Tiết Đơn Hàng</th>
+                         
                             </tr>
                         </thead>
                         <tbody>
@@ -89,7 +109,7 @@
                                             <td>${dto.getOrderID()}</td>
                                             <td>${dto.getFullName()}</td>
                                             <td>${dto.getPhone()}</td>
-                                            <td>${dto.getTotal()}</td>
+                                            <td><fmt:formatNumber type="number" maxFractionDigits="3" value="${dto.getTotal()}" />đ</td>
                                             <td>${dto.getTimeOfCreate()}</td>
                                             <c:if test="${dto.getStatus() == 1}">
                                                 <td>Đang chờ</td>
@@ -114,7 +134,7 @@
                                             <c:if test="${dto.getStatus() == 0}" >
                                                 <td>#</td>
                                             </c:if>
-                                            <td>Xem</td>
+                                   
 
                                         </tr>
                                     </c:forEach>
@@ -125,11 +145,16 @@
                         </c:if>
                         </tbody>
                     </table>
-                </div>
 
+                   
+                </div>
+                 <div class="pagination">
+                        <ol id="numbers"></ol>
+                    </div>
             </div>
         </div>
         <script src="./js/index.js"></script>
+        <script src="./js/paging_table.js"></script>
     </body>
 
 </html>

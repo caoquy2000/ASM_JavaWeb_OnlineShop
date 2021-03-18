@@ -7,6 +7,7 @@ package quych.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,26 +15,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import quych.dtos.ProductDTO;
-import quych.models.ProductDAO;
+import quych.dtos.OrderDTO;
+import quych.models.OrderDAO;
 
 /**
  *
  * @author caoho
  */
-@WebServlet(name = "ManageProductController", urlPatterns = {"/ManageProductController"})
-public class ManageProductController extends HttpServlet {
+@WebServlet(name = "SearchStatictisController", urlPatterns = {"/SearchStatictisController"})
+public class SearchStatictisController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            ProductDAO dao = new ProductDAO();
-            List<ProductDTO> manageProduct = dao.getListProductAndCategoryName();
-            request.setAttribute("MANAGEPRODUCT", manageProduct);
-            request.setAttribute("CLASS1", "active-choose");
+            String frValueSearch = request.getParameter("txtDateSearchFr");
+            String seValueSearch = request.getParameter("txtDateSearchSe");
+            System.out.println(frValueSearch);
+            System.out.println(seValueSearch);
+           
+             OrderDAO dao = new OrderDAO();
+
+            List<OrderDTO> listDTO = dao.searchStatictis(frValueSearch, seValueSearch);
+
+            request.setAttribute("RESULTSTATICTIS", listDTO);
+            request.setAttribute("CLASS4", "active-choose");
         } catch (Exception e) {
-            log("ERROR at ManageController: " + e.getMessage());
+            log("ERROR at SearchStatictisController: " + e.getMessage());
         } finally {
             HttpSession session = request.getSession();
             String username = (String) session.getAttribute("USERNAME");
@@ -43,7 +51,7 @@ public class ManageProductController extends HttpServlet {
                 if (!username.equals("admin")) {
                     response.sendRedirect("LoadDataController");
                 } else {
-                    request.getRequestDispatcher("admin-product-page.jsp").forward(request, response);
+                    request.getRequestDispatcher("admin-statictis-page.jsp").forward(request, response);
                 }
             }
         }

@@ -8,7 +8,7 @@
 <div class="nav--bar">
     <div class="profile--admin">
         <div class="logo--img">
-            <h1><a class="hyper__link__logo" href="#">Chợ Tết</a></h1>
+            <h1><a class="hyper__link__logo" href="#" style="text-decoration: none;">Chợ Tết</a></h1>
         </div>
 
     </div>

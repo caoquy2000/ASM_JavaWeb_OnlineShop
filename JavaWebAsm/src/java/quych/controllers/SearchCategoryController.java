@@ -32,7 +32,9 @@ public class SearchCategoryController extends HttpServlet {
             String valueSearch = request.getParameter("txtValueSearchCategory");
             CategoryDAO dao = new CategoryDAO();
             List<CategoryDTO> resultSearchCategory = dao.searchByLikeName(valueSearch);
-           
+            if (resultSearchCategory.size() == 0) {
+                request.setAttribute("NULL", "Không có danh mục nào được tìm thấy!");
+            }
             request.setAttribute("RESULTSEARCHCATEGORY", resultSearchCategory);
         } catch (Exception e) {
             log("ERROR at SearchCategoryController: " + e.getMessage());

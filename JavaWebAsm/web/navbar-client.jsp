@@ -13,43 +13,42 @@
     <div class="navbar-container">
         <div class="nav--menu">
             <div class="nav--logo">
-                <h1><a class="hyper__link__logo" href="MainController">Chợ Tết</a></h1>
+                <h1><a class="hyper__link__logo" style="text-decoration: none; color: #fff;" href="MainController">Chợ Tết</a></h1>
             </div>
             <div class="nav--list-menu">
                 <ul>
                     <li class="nav-items"><a class="hyper__link" href="MainController"><i
                                 class="fas fa-house-user img--icon-header"></i>Trang Chủ</a></li>
-                    <li class="nav-items"><a class="hyper__link" href="#"><i
-                                class="far fa-bell img--icon-header"></i>Thông Báo</a></li>
-                            <c:if test="${empty sessionScope.USERNAME}" var="checkUsername" >
-                                <c:url var="linkSignup" value="MainController">
-                                    <c:param name="action" value="CreateNewAccount" />
-                                </c:url>
+
+                    <c:if test="${empty sessionScope.USERNAME}" var="checkUsername" >
+                        <c:url var="linkSignup" value="MainController">
+                            <c:param name="action" value="CreateNewAccount" />
+                        </c:url>
                         <li class="nav-items"><a class="hyper__link" href="${linkSignup}"><i class="fas fa-user-plus img--icon-header"></i>Đăng Ký</a></li>
                         </c:if>
                         <c:if test="${!checkUsername}" >
-                            
-                            <li class="nav-items" style="margin-right: 2rem;">
-                                <c:url var="linkToHistory" value="MainController">
-                                    <c:param name="action" value="HistoryPage" />
-                                </c:url>
-                                <a class="hyper__link" href="${linkToHistory}"><i class="fas fa-history img--icon-header"></i>Lịch Sử</a>
-                            </li>
-                        </c:if>
-                        <c:if test="${!checkUsername}" >
-                            <div class="dropdown" >
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="font-size: 1.6rem;">
-                                    Xem Thêm
-                                </button>
-                                <div class="dropdown-menu">
-                                    <c:url var="linkToMyOrder" value="MainController">
-                                        <c:param name="action" value="LoadMyOrder" />
-                                    </c:url>
-                                    <a class="dropdown-item" href="${linkToMyOrder}" style="font-size: 1.4rem;">Đơn Hàng Của Tôi</a>
-                                
 
-                                </div>
+                        <li class="nav-items" style="margin-right: 2rem;">
+                            <c:url var="linkToHistory" value="MainController">
+                                <c:param name="action" value="HistoryPage" />
+                            </c:url>
+                            <a class="hyper__link" href="${linkToHistory}"><i class="fas fa-history img--icon-header"></i>Lịch Sử</a>
+                        </li>
+                    </c:if>
+                    <c:if test="${!checkUsername}" >
+                        <div class="dropdown" >
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="font-size: 1.6rem;">
+                                Xem Thêm
+                            </button>
+                            <div class="dropdown-menu">
+                                <c:url var="linkToMyOrder" value="MainController">
+                                    <c:param name="action" value="LoadMyOrder" />
+                                </c:url>
+                                <a class="dropdown-item" href="${linkToMyOrder}" style="font-size: 1.4rem;">Đơn Hàng Của Tôi</a>
+
+
                             </div>
+                        </div>
                     </c:if>
 
                 </ul>
@@ -58,9 +57,9 @@
         </div>
         <div class="nav--wrapper">
             <div class="nav--search-form">
-                <form action="">
-                    <input type="text" required placeholder="Tìm kiếm trên Chợ Tết">
-                    <button type="submit"><i class="fas fa-search main-color"></i></button>
+                <form action="MainController" method="POST">
+                    <input type="text"  placeholder="Tìm kiếm trên Chợ Tết" name="txtSearchProductHome">
+                    <button type="submit" name="action" value="SearchProductAtHome"><i class="fas fa-search main-color"></i></button>
                 </form>
             </div>
             <div class="nav--login">

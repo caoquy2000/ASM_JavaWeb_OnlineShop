@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import quych.db.DBUtils;
 import quych.dtos.OrderDTO;
@@ -143,4 +144,74 @@ public class OrderDAO {
         }
         return check;
     }
+    
+    public List<OrderDTO> getStatictisDefault() throws Exception {
+         List<OrderDTO> result;
+        try {
+            conn = DBUtils.getConnection();
+            String sql = "select Convert(date,timeOfCreate) as Ngay, COUNT(timeOfCreate) as SoDonHang "
+                    + "from tblOrders group by Convert(date,timeOfCreate) "
+                    + "having Convert(date,timeOfCreate) >= CONVERT(date, GETDATE() - 7) AND Convert(date,timeOfCreate) <= CONVERT(date, GETDATE())";
+            stm = conn.prepareStatement(sql);
+            rs = stm.executeQuery();
+            result = new ArrayList<>();
+            while(rs.next()) {
+                Date date = rs.getDate("Ngay");
+
+                int soDonHang = rs.getInt("SoDonHang");
+                OrderDTO dto = new OrderDTO(date, soDonHang);
+                result.add(dto);
+            }
+        } finally {
+            closeConnection();
+        }
+        return result;
+    } 
+     public List<OrderDTO> searchStatictis(String dateFr, String dateSe) throws Exception {
+         List<OrderDTO> result;
+        try {
+            conn = DBUtils.getConnection();
+            String sql = "select Convert(date,timeOfCreate) as Ngay, COUNT(timeOfCreate) as SoDonHang "
+                    + "from tblOrders group by Convert(date,timeOfCreate) "
+                    + "having Convert(date,timeOfCreate) >= ? AND Convert(date,timeOfCreate) <= ?";
+            stm = conn.prepareStatement(sql);
+            stm.setString(1, dateFr);
+            stm.setString(2, dateSe);
+            rs = stm.executeQuery();
+            result = new ArrayList<>();
+            while(rs.next()) {
+                Date date = rs.getDate("Ngay");
+                int soDonHang = rs.getInt("SoDonHang");
+                OrderDTO dto = new OrderDTO(date, soDonHang);
+                result.add(dto);
+            }
+        } finally {
+            closeConnection();
+        }
+        return result;
+    } 
+     
+   public OrderDTO getOrderHistoryById(String id) throws Exception {
+       OrderDTO dto; 
+       try {
+           conn = DBUtils.getConnection();
+           String sql = "Select fullName, address, phone, email, total from tblOrders Where orderID = ?";
+           stm = conn.prepareStatement(sql);
+           stm.setString(1, id);
+           dto = new OrderDTO();
+           rs = stm.executeQuery();
+           if (rs.next()) {
+               dto.setOrderID(id);
+               dto.setFullName(rs.getString("fullName"));
+               dto.setAddress(rs.getString("address"));
+               dto.setPhone(rs.getString("phone"));
+               dto.setEmail(rs.getString("email"));
+               dto.setTotal(rs.getFloat("total"));
+           }
+       } finally {
+           closeConnection();
+       }
+       return dto;
+   }
+    
 }

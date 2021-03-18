@@ -33,6 +33,7 @@ public class LoadOrderController extends HttpServlet {
             List<OrderDTO> result = dao.getListOrder();
             Collections.sort(result, Collections.reverseOrder());
             request.setAttribute("RESULT", result);
+             request.setAttribute("CLASS3", "active-choose");
         } catch (Exception e) {
             log("ERROR at LoadOrderController: " + e.getMessage());
         } finally {
